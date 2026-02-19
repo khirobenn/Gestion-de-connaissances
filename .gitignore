@@ -1,2 +1,5 @@
 .env
 env
+*.ipynb
+chrome*
+__pycache__
