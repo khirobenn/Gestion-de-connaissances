@@ -46,7 +46,7 @@ vector_store = Chroma(
 if add_documents:
     print("\nEmbedding..")
     vector_store.add_documents(documents=documents, ids=ids)
-    print("\Finished ;)")
+    print("Finished ;)")
 
 retriever = vector_store.as_retriever(
     search_kwargs={"k":3},
