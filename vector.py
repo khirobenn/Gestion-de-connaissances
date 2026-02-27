@@ -3,9 +3,12 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 import os
 import pandas as pd
+import requests
 
-df = pd.read_csv("champions-league-2025-UTC.csv")
-embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+match_scores = requests.get('https://fixturedownload.com/feed/json/champions-league-2025')
+df = pd.DataFrame(match_scores.json())
+
+embeddings = OllamaEmbeddings(model="embeddinggemma")
 
 db_location = "./chrome_langchain_db"
 add_documents = not os.path.exists(db_location)
@@ -15,14 +18,17 @@ if add_documents:
     ids = []
 
     for i, row in df.iterrows():
-        home_score = ""
-        away_score = ""
-        scores = str(row["Result"]).split("-")
-        if len(scores) == 2:
-            home_score = scores[0].strip()
-            away_score = scores[1].strip()
+        home_score = int(row["HomeTeamScore"])
+        away_score = int(row["AwayTeamScore"])
+
+        verb = "drew"
+
+        if home_score > away_score:
+            verb = "won"
+        elif away_score > home_score:
+            verb = "lost"
         
-        info = "Date: " + str(row["Date"]) + ", " + "Location: " + str(row["Location"]) + ", " + str(row["Home Team"]) + " " + home_score + " - " + away_score + " " + str(row["Away Team"])
+        info = f"In the round {row["RoundNumber"]} of champions league 2025/2026, {row["HomeTeam"]} {verb} against {row["AwayTeam"]} with a score : {home_score} - {away_score}. The match was played on {row["DateUtc"]} at the {row["HomeTeam"]}'s stadium called {row["Location"]}."
         print(info)
         document = Document(
             page_content=info,
@@ -38,7 +44,9 @@ vector_store = Chroma(
 )
 
 if add_documents:
+    print("\nEmbedding..")
     vector_store.add_documents(documents=documents, ids=ids)
+    print("\Finished ;)")
 
 retriever = vector_store.as_retriever(
     search_kwargs={"k":3},

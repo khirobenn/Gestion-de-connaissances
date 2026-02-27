@@ -2,12 +2,12 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
 
-model = OllamaLLM(model="llama3.2")
+model = OllamaLLM(model="gemma3:27b-cloud")
 
 template = """
 You are an expert in answering questions about football
 
-Here are some information about what happened today in champions league: {information}
+Here are some information about what happened in champions league 2025/2026: {information}
 
 Here is the question to answer: {question}
 """
