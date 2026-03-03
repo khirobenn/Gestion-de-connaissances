@@ -1,9 +1,9 @@
 # Création d'environnement et activation:
 - ### Linux:
-`python3 -v venv env` puis
+`python3 -m venv env` puis
 `source env/bin/activate`.
 - ### Windows:
-`python -v venv env` puis `env\Scripts\activate`
+`python -m venv env` puis `env\Scripts\activate`
 
 # Installation des dépendances:
 `pip install -r requirements`
