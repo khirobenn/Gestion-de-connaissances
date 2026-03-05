@@ -7,7 +7,7 @@ import requests
 
 match_scores = requests.get('https://fixturedownload.com/feed/json/champions-league-2025')
 df = pd.DataFrame(match_scores.json())
-df.dropna(subset=["HomeTeamScore"])
+df = df.dropna(subset=["HomeTeamScore"])
 
 embeddings = OllamaEmbeddings(model="embeddinggemma")
 
