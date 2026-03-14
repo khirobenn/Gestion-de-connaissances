@@ -1,0 +1,17 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root, .App {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: #0e0e10;
+  font-family: 'Georgia', serif;
+  color: #e8e3dc;
+  -webkit-font-smoothing: antialiased;
+}

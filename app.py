@@ -16,11 +16,11 @@ prompt = ChatPromptTemplate.from_template(template)
 
 chain = prompt | model
 
-while True:
-    print("\n\n-----------------------------------")
-    question = input("Ask your question (q to quit): ")
-    if question == "q":
-        break
-    information = retriever.invoke(question)
-    res = chain.invoke({"information": information, "question": question})
-    print(res)
+# while True:
+#     print("\n\n-----------------------------------")
+#     question = input("Ask your question (q to quit): ")
+#     if question == "q":
+#         break
+#     information = retriever.invoke(question)
+#     res = chain.invoke({"information": information, "question": question})
+#     print(res)
