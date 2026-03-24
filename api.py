@@ -1,7 +1,11 @@
-from fastapi import FastAPI
+from collections.abc import AsyncIterable
+import json
+from fastapi import FastAPI, Response
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+from sse_starlette import EventSourceResponse 
 # from starlette.responses import StreamingResponse
 from app import chain
 from vector import retriever
@@ -19,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/")
 async def root():
     return {"message": "Hello!! I'm working"}
@@ -31,6 +34,15 @@ async def post(question_item:Item):
     return {"response":res}
     # return StreamingResponse(stream_generator(res), media_type='text/event-stream')
 
+async def stream_response(chain, information, question_item):
+    for chunk in chain.stream({"information": information, "question": question_item.question}):
+        yield json.dumps({"event": "message", "message": chunk})
+    yield json.dumps({"event" : "end"})
+
+@app.post("/stream/", response_class=StreamingResponse)
+async def stream(question_item:Item):
+    information = retriever.invoke(question_item.question)
+    return StreamingResponse(stream_response(chain, information, question_item))
 
 if __name__ == "__main__":
     uvicorn.run("api:app", port=5000, log_level="info")
