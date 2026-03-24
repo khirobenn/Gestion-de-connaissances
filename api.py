@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 # from starlette.responses import StreamingResponse
-from app import template, chain
+from app import chain
 from vector import retriever
 
 class Item(BaseModel):

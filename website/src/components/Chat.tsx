@@ -74,7 +74,7 @@ const Chat: React.FC = () => {
     <div className="chat-shell">
       <header className="chat-header">
         <div className="chat-header__dot" />
-        <span className="chat-header__title">Claude Chat</span>
+        <span className="chat-header__title">Champions League Assistant</span>
       </header>
 
       <main className="chat-messages">
@@ -87,7 +87,7 @@ const Chat: React.FC = () => {
         {messages.map((msg, i) => (
           <div key={i} className={`chat-bubble chat-bubble--${msg.role}`}>
             <span className="chat-bubble__label">
-              {msg.role === "user" ? "You" : "Claude"}
+              {msg.role === "user" ? "You" : "Assistant"}
             </span>
             <p className="chat-bubble__text">{msg.content}</p>
           </div>
@@ -95,7 +95,7 @@ const Chat: React.FC = () => {
 
         {loading && (
           <div className="chat-bubble chat-bubble--assistant">
-            <span className="chat-bubble__label">Claude</span>
+            <span className="chat-bubble__label">Assistant</span>
             <span className="chat-typing">
               <span /><span /><span />
             </span>
@@ -109,7 +109,7 @@ const Chat: React.FC = () => {
         <textarea
           className="chat-input"
           rows={1}
-          placeholder="Message Claude… (Enter to send, Shift+Enter for newline)"
+          placeholder="Message Assistant.. (Enter to send, Shift+Enter for newline)"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
