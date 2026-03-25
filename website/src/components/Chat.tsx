@@ -29,30 +29,42 @@ const Chat: React.FC = () => {
     setInput("");
     setLoading(true);
 
-    console.log(newMessages)
-
+    const previous = newMessages
+    let assistantText = ""
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        mode: "cors",
-        body: JSON.stringify({
-          "question": trimmed,
-        }),
-      });
+      const API_URL = "http://127.0.0.1:5000/stream/";
+      let assistantText = ""
+      fetch(API_URL, {
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              mode: "cors",
+              body: JSON.stringify({
+                "question": trimmed,
+              }),
+            }).then(response => {
+              const reader = response.body?.getReader();
+              const decoder = new TextDecoder();
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
+              function read() {
+                  reader?.read().then(({ done, value }) => {
+                  if (done) {
+                      return;
+                  }
 
-      const data = await response.json();
+                  const chunk = decoder.decode(value, { stream: true });
+                  assistantText += chunk;
+                  setMessages([...previous, { role: "assistant", content: assistantText }]);
 
-      const assistantText = data.response
+                  read();
+                  });
+              }
+              read();
+    });
+    // setMessages((prev) => [...prev, { role: "assistant", content: assistantText }]);
 
-      setMessages((prev) => [...prev, { role: "assistant", content: assistantText }]);
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,

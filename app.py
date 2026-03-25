@@ -2,7 +2,7 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
 
-model = OllamaLLM(model="gemma3:27b-cloud")
+model = OllamaLLM(model="gemma3:27b-cloud", streaming=True)
 
 template = """
 You are an expert in answering questions about football
