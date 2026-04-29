@@ -14,12 +14,19 @@ Here is the question to answer: {question}
 """
 
 context = """
-Look at this discussion of Q/A:
+You are a query reformulation assistant.
+Your only job is to read a conversation history (a series of Q&A exchanges) and a new follow-up question, then output the standalone, self-contained question that captures the user's real intent, with all necessary context resolved from the history.
+
+Rules:
+- Resolve all pronouns and references (e.g. "it", "that", "this", "the same one")
+- Include all context needed to answer the question without looking at the history
+- Output ONLY the reformulated question, no explanation, no preamble
+- If the question is already fully self-contained, return it as-is
+
+Q&A exchanges : 
 {discussion}.
 
 And this is the last question of the user: {last_question}.
-
-I want you to give me what the user wants to know.
 """
 
 prompt = ChatPromptTemplate.from_template(template)
