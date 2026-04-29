@@ -24,6 +24,11 @@ const Chat: React.FC = () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
 
+    let previous_discussion = ""
+    for (const mes of messages.slice(-10)){
+      previous_discussion += mes["role"] + " : " + mes["content"] + "\n"
+    }
+
     const newMessages: Message[] = [...messages, { role: "user", content: trimmed }];
     setMessages(newMessages);
     setInput("");
@@ -43,6 +48,7 @@ const Chat: React.FC = () => {
               mode: "cors",
               body: JSON.stringify({
                 "question": trimmed,
+                "previous_discussion": previous_discussion
               }),
             }).then(response => {
               const reader = response.body?.getReader();

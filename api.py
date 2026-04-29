@@ -12,6 +12,7 @@ from vector import retriever
 
 class Item(BaseModel):
     question: str
+    previous_discussion : str
 
 app = FastAPI()
 origins = ["*"]
@@ -23,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-answers = []
 
 @app.get("/")
 async def root():
@@ -44,17 +44,14 @@ async def stream_response(chain, information, previous_discussion, question_item
         resp += chunk
         yield chunk
         await asyncio.sleep(0.5)
-        answers.append({"question": question_item.question, "answer": resp})
     # yield json.dumps({"event" : "end"})
 
 @app.post("/stream/", response_class=StreamingResponse)
 async def stream(question_item:Item):
-    previous_discussion = ""
-    if len(answers) == 0:
+    previous_discussion = question_item.previous_discussion
+    if len(previous_discussion) == 0:
         question = question_item.question
     else:
-        for disc in answers[-5:]:
-            previous_discussion += f"- Q : {disc["question"]}\nA : {disc["answer"]}\n\n"
         question = context_discussion.invoke({"discussion": previous_discussion, "last_question": question_item.question})
     information = retriever.invoke(question)
     return StreamingResponse(stream_response(chain, information, previous_discussion, question_item), media_type="text/plain")
