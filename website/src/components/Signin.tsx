@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./auth.css";
 
-type Tab = "signin" | "signup";
+import { supabase } from '../utils/supabase'
 
+type Tab = "signin" | "signup";
 function StrengthBar({ password }: { password: string }) {
   const getScore = (v: string): number => {
     let score = 0;
@@ -43,8 +44,25 @@ function SignInForm({ onSwitch }: { onSwitch: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
+  const [todos, setTodos] = useState<any[] | null>(null)
 
+  
+
+  const handleSubmit = () => {
+    async function getTodos() {
+        const { data: data, error: err } = await supabase.auth.signInWithPassword({
+          email:email,
+          password:password
+        })
+
+        if (err) {
+          console.log("Erreur de se connecter hhhhh tu fais le malin")
+        }
+        else{
+          console.log("login with success")
+        }
+      };
+    getTodos()
   };
 
   return (
@@ -100,7 +118,26 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
   const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = () => {
+    async function getTodos() {
+        const { data: data, error: err } = await supabase.auth.signUp({
+          email:email,
+          password:password,
+          options: {
+            data:{
+              firstName : firstName,
+              lastName : lastName
+            }
+          }
+        })
 
+        if (err) {
+          console.log("Erreur de créer un compte")
+        }
+        else{
+          console.log("création de compte")
+        }
+      };
+    getTodos()
   };
 
   return (
