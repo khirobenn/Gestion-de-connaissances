@@ -13,9 +13,20 @@ Here are some information about what happened in champions league 2025/2026: {in
 Here is the question to answer: {question}
 """
 
+context = """
+Look at this discussion of Q/A:
+{discussion}.
+
+And this is the last question of the user: {last_question}.
+
+I want you to give me what the user wants to know.
+"""
+
 prompt = ChatPromptTemplate.from_template(template)
+prompt_discussion = ChatPromptTemplate.from_template(context)
 
 chain = prompt | model
+context_discussion = prompt_discussion | model
 
 # while True:
 #     print("\n\n-----------------------------------")

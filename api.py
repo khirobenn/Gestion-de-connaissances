@@ -7,7 +7,7 @@ from pydantic import BaseModel
 import uvicorn
 from sse_starlette import EventSourceResponse 
 # from starlette.responses import StreamingResponse
-from app import chain
+from app import chain, context_discussion
 from vector import retriever
 
 class Item(BaseModel):
@@ -50,9 +50,13 @@ async def stream_response(chain, information, previous_discussion, question_item
 @app.post("/stream/", response_class=StreamingResponse)
 async def stream(question_item:Item):
     previous_discussion = ""
-    for disc in answers[-5:]:
-        previous_discussion += f"Question : {disc["question"]}\nAnswer : {disc["answer"]}\n"
-    information = retriever.invoke(question_item.question)
+    if len(answers) == 0:
+        question = question_item.question
+    else:
+        for disc in answers[-5:]:
+            previous_discussion += f"- Q : {disc["question"]}\nA : {disc["answer"]}\n\n"
+        question = context_discussion.invoke({"discussion": previous_discussion, "last_question": question_item.question})
+    information = retriever.invoke(question)
     return StreamingResponse(stream_response(chain, information, previous_discussion, question_item), media_type="text/plain")
 
 if __name__ == "__main__":
