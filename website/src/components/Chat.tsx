@@ -118,6 +118,7 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   const onNewDiscussion = async () => {
+    setActiveId(null);
     if(messages.length == 0) return;
     if(!userData) return;
     const newData = { user_id: userData.id, discussion: messages, title:"khiro" }
@@ -129,6 +130,8 @@ function Chat ({setAccess} : {setAccess:any}) {
 
     if(data){
       setMessages([]);
+      setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
+      console.log(data)
     }
   };
 
@@ -136,9 +139,13 @@ function Chat ({setAccess} : {setAccess:any}) {
     const {error} = await supabase.from("discussions").delete().eq('id', id)
     if(!error){
       const newPreviousDiscussion = userDiscussions.filter(
-        discussion => discussion.id != id
+        discussion => discussion.id !== id
       );
       setUserDiscussions(newPreviousDiscussion)
+      if(activeId === id){
+        setActiveId(null);
+        setMessages([]);
+      }
     }
     else{
       console.log("Erreur de supression !")
