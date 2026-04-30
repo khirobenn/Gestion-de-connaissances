@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, act } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Chat.css";
 import { supabase } from "../utils/supabase";
 import { Sidebar, type Discussion } from "./Sidebar";

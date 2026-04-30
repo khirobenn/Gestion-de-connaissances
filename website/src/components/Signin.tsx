@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./auth.css";
 
 import { supabase } from '../utils/supabase'
@@ -44,13 +44,9 @@ function SignInForm({ onSwitch, setAccess }: { onSwitch: () => void, setAccess:a
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [todos, setTodos] = useState<any[] | null>(null)
-
-  
-
   const handleSubmit = () => {
     async function getTodos() {
-        const { data: data, error: err } = await supabase.auth.signInWithPassword({
+        const { error: err } = await supabase.auth.signInWithPassword({
           email:email,
           password:password
         })
@@ -122,7 +118,7 @@ function SignUpForm({ onSwitch, setAccess }: { onSwitch: () => void, setAccess:a
 
   const handleSubmit = () => {
     async function getTodos() {
-        const { data: data, error: err } = await supabase.auth.signUp({
+        const { error: err } = await supabase.auth.signUp({
           email:email,
           password:password,
           options: {
