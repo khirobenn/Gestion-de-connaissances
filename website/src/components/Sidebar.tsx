@@ -7,7 +7,7 @@ export interface Discussion {
 interface SidebarProps {
   discussions: Discussion[];
   activeId: string | null;
-  // onSelect: (id: string) => void;
+  onSelect: (id: string) => void;
   onNew: () => void;
   onDelete: (id: string) => void;
   onLogout: () => void;
@@ -16,7 +16,7 @@ interface SidebarProps {
 export function Sidebar({
   discussions,
   activeId,
-  // onSelect, 
+  onSelect, 
   onNew,
   onDelete,
   onLogout,
@@ -38,7 +38,7 @@ export function Sidebar({
           <div
             key={d.id}
             className={`sidebar__item${activeId === d.id ? " sidebar__item--active" : ""}`}
-            // onClick={() => onSelect(d.id)}
+            onClick={() => onSelect(d.id)}
           >
             <div className="sidebar__item-dot" />
             <div className="sidebar__item-title">{d.title}</div>

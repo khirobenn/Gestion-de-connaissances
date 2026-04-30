@@ -16,6 +16,7 @@ function Chat ({setAccess} : {setAccess:any}) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [userDiscussions, setUserDiscussions] = useState<Discussion[]>([]);
   const [userData, setUserData] = useState<User | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -144,12 +145,26 @@ function Chat ({setAccess} : {setAccess:any}) {
     }
   }
 
+  const onSelect = async (id:string) => {
+    setActiveId(id);
+    const { data: data } = await supabase
+    .from('discussions')
+    .select('discussion')
+    .eq('id', id);
+
+    if(data){
+      setMessages(data[0].discussion)
+    }else{
+      console.log("erreur de charger la discussion")
+    }
+  };
+
   return (
     <div className="app-layout">
       <Sidebar                          // ← NEW sidebar
         discussions={userDiscussions}
-        activeId={null}
-        // onSelect={(id: string) => void}
+        activeId={activeId}
+        onSelect={onSelect}
         onNew={onNewDiscussion}
         onDelete={onDelete}
         onLogout={onLogout}
