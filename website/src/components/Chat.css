@@ -38,6 +38,39 @@
   font-family: 'Courier New', monospace;
 }
 
+.chat-header-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #2a2a2e;
+  background: #18181c;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.chat-header-btn--new {
+  color: #d8d3cc;
+}
+.chat-header-btn--new:hover {
+  border-color: #c8a96e;
+  background: #1e1c17;
+}
+
+.chat-header-btn--logout {
+  color: #888;
+}
+.chat-header-btn--logout:hover {
+  border-color: #3a3a3e;
+  background: #1c1c20;
+  color: #b0a9a0;
+}
+
 /* ── Messages ───────────────────────────────────── */
 .chat-messages {
   flex: 1;

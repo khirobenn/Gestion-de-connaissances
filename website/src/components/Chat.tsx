@@ -1,20 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Chat.css";
+import { supabase } from "../utils/supabase";
+import type { User } from "@supabase/supabase-js";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-// 👇 Replace with your actual API URL
-const API_URL = "http://127.0.0.1:5000/chat/";
-
-
-const Chat: React.FC = () => {
+function Chat ({setAccess} : {setAccess:any}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [userData, setUserData] = useState<User | null>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,7 +34,6 @@ const Chat: React.FC = () => {
     setLoading(true);
 
     const previous = newMessages
-    let assistantText = ""
     try {
       const API_URL = "http://127.0.0.1:5000/stream/";
       let assistantText = ""
@@ -88,11 +86,59 @@ const Chat: React.FC = () => {
     }
   };
 
+  const onLogout = async () => {
+    const {error:err} = await supabase.auth.signOut()
+    if(!err){
+      setAccess(false)
+    }
+  };
+
+  const onNewDiscussion = async () => {
+    const { data: { user }} =  await supabase.auth.getUser();
+
+    if(!user) return;
+    const newData = { user_id: user.id, discussion: messages }
+    console.log(newData)
+    const {data: data, error: err} = await supabase.from("discussions").insert(
+      [
+        newData,
+      ]
+    ).select()
+
+
+    if(data){
+      setMessages([]);
+    }
+    else{
+      console.log("erreur d'insérer une discussion")
+    }
+
+    console.log("data:", data);
+    console.log("error:", err);
+  };
+
   return (
     <div className="chat-shell">
       <header className="chat-header">
         <div className="chat-header__dot" />
         <span className="chat-header__title">Champions League Assistant</span>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
+          <button className="chat-header-btn chat-header-btn--new" onClick={onNewDiscussion}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M6.5 1v11M1 6.5h11" stroke="#c8a96e" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+            New chat
+          </button>
+          <button className="chat-header-btn chat-header-btn--logout" onClick={onLogout}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M5 2H2.5A1 1 0 001.5 3v7a1 1 0 001 1H5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              <path d="M8.5 9.5L11.5 6.5 8.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="4.5" y1="6.5" x2="11" y2="6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+            Log out
+          </button>
+        </div>
       </header>
 
       <main className="chat-messages">

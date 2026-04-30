@@ -40,7 +40,7 @@ function StrengthBar({ password }: { password: string }) {
   );
 }
 
-function SignInForm({ onSwitch }: { onSwitch: () => void }) {
+function SignInForm({ onSwitch, setAccess }: { onSwitch: () => void, setAccess:any}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,6 +60,7 @@ function SignInForm({ onSwitch }: { onSwitch: () => void }) {
         }
         else{
           console.log("login with success")
+          setAccess(true)
         }
       };
     getTodos()
@@ -109,13 +110,15 @@ function SignInForm({ onSwitch }: { onSwitch: () => void }) {
   );
 }
 
-function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
+function SignUpForm({ onSwitch, setAccess }: { onSwitch: () => void, setAccess:any}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [erreur, setErreur] = useState(false);
+  const [signedUp, setSignedUp] = useState(false);
 
   const handleSubmit = () => {
     async function getTodos() {
@@ -131,10 +134,10 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
         })
 
         if (err) {
-          console.log("Erreur de créer un compte")
+          setErreur(true)
         }
         else{
-          console.log("création de compte")
+          setSignedUp(true)
         }
       };
     getTodos()
@@ -218,6 +221,8 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
         </div>
 
         <div className="divider" />
+        {erreur && <p style={{color:"red"}}>Email already used or weak password !</p>}
+        {signedUp && <p style={{color:"green"}}>Please check your email to confirm new account !</p>}
         <button className="btn-primary" onClick={handleSubmit}>Create Account →</button>
         <p className="helper">
           Already have an account?{" "}
@@ -230,7 +235,7 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
   );
 }
 
-export default function AuthPage() {
+export default function AuthPage({ setAccess } : { setAccess : any }) {
   const [tab, setTab] = useState<Tab>("signin");
 
   return (
@@ -252,9 +257,9 @@ export default function AuthPage() {
 
       <div className="auth-page">
         {tab === "signin" ? (
-          <SignInForm onSwitch={() => setTab("signup")} />
+          <SignInForm onSwitch={() => setTab("signup")} setAccess={setAccess} />
         ) : (
-          <SignUpForm onSwitch={() => setTab("signin")} />
+          <SignUpForm onSwitch={() => setTab("signin")} setAccess={setAccess}/>
         )}
       </div>
     </div>
