@@ -29,11 +29,30 @@ Q&A exchanges :
 And this is the last question of the user: {last_question}.
 """
 
+title_template = """
+You are a conversation titler. Given the first exchange between a user and an AI assistant, produce a short, descriptive title for the conversation.
+
+Rules:
+- 3 to 7 words
+- Sentence case (only first word and proper nouns capitalised)
+- Specific and descriptive — not generic like "Question about X"
+- No quotes, no punctuation at the end
+
+User message:
+{user_message}
+
+AI answer:
+{ai_answer}
+
+Respond with the title only, nothing else.
+"""
+
 prompt = ChatPromptTemplate.from_template(template)
 prompt_discussion = ChatPromptTemplate.from_template(context)
 
 chain = prompt | model
 context_discussion = prompt_discussion | model
+title = title_template | model
 
 # while True:
 #     print("\n\n-----------------------------------")
