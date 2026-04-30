@@ -33,10 +33,7 @@ function Chat ({setAccess} : {setAccess:any}) {
       .select('id, title')
 
       if(discussions){
-        setUserDiscussions([...userDiscussions, {
-          id: discussions[0].id,
-          title: discussions[0].title,
-        }])
+        setUserDiscussions([...userDiscussions, ...discussions])
         console.log(discussions)
       }
 
@@ -112,7 +109,7 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   const onLogout = async () => {
-    onNewDiscussion();
+    await onNewDiscussion();
     const {error:err} = await supabase.auth.signOut()
     if(!err){
       setAccess(false)
