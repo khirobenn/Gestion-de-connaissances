@@ -87,6 +87,7 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   const onLogout = async () => {
+    onNewDiscussion();
     const {error:err} = await supabase.auth.signOut()
     if(!err){
       setAccess(false)
@@ -94,27 +95,21 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   const onNewDiscussion = async () => {
+    if(messages.length == 0) return;
+
     const { data: { user }} =  await supabase.auth.getUser();
 
     if(!user) return;
     const newData = { user_id: user.id, discussion: messages }
-    console.log(newData)
-    const {data: data, error: err} = await supabase.from("discussions").insert(
+    const {data: data} = await supabase.from("discussions").insert(
       [
         newData,
       ]
     ).select()
 
-
     if(data){
       setMessages([]);
     }
-    else{
-      console.log("erreur d'insérer une discussion")
-    }
-
-    console.log("data:", data);
-    console.log("error:", err);
   };
 
   return (
