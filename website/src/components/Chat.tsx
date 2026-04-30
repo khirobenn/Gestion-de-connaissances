@@ -182,18 +182,36 @@ function Chat ({setAccess} : {setAccess:any}) {
     }
   };
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="app-layout">
-      <Sidebar                          // ← NEW sidebar
+      <div
+        className={`sidebar-overlay${sidebarOpen ? " sidebar-overlay--open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <Sidebar
         discussions={userDiscussions}
         activeId={activeId}
         onSelect={onSelect}
         onNew={onNewDiscussion}
         onDelete={onDelete}
         onLogout={onLogout}
+        isOpen={sidebarOpen}
       />
+
       <div className="chat-shell">
         <header className="chat-header">
+          <button
+            className="chat-header__menu-btn"
+            onClick={() => setSidebarOpen(o => !o)}
+            aria-label="Toggle sidebar"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 4h12M2 8h12M2 12h12" stroke="#c8a96e" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+
           <div className="chat-header__dot" />
           <span className="chat-header__title">Champions League Assistant</span>
         </header>

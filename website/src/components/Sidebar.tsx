@@ -11,6 +11,7 @@ interface SidebarProps {
   onNew: () => void;
   onDelete: (id: string) => void;
   onLogout: () => void;
+  isOpen: boolean;
 }
 
 export function Sidebar({
@@ -20,9 +21,10 @@ export function Sidebar({
   onNew,
   onDelete,
   onLogout,
+  isOpen
 }: SidebarProps) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? " sidebar--open" : ""}`}>
       <div className="sidebar__header">
         <p className="sidebar__title">Discussions</p>
         <button className="sidebar__new-btn" onClick={onNew}>
