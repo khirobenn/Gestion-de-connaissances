@@ -49,10 +49,11 @@ Respond with the title only, nothing else.
 
 prompt = ChatPromptTemplate.from_template(template)
 prompt_discussion = ChatPromptTemplate.from_template(context)
+prompt_title = ChatPromptTemplate.from_template(title_template)
 
 chain = prompt | model
 context_discussion = prompt_discussion | model
-title = title_template | model
+title = prompt_title | model
 
 # while True:
 #     print("\n\n-----------------------------------")

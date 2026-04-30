@@ -7,12 +7,16 @@ from pydantic import BaseModel
 import uvicorn
 from sse_starlette import EventSourceResponse 
 # from starlette.responses import StreamingResponse
-from app import chain, context_discussion
+from app import chain, context_discussion, title
 from vector import retriever
 
 class Item(BaseModel):
     question: str
     previous_discussion : str
+
+class FirstDiscussion(BaseModel):
+    user_message : str
+    ai_answer : str
 
 app = FastAPI()
 origins = ["*"]
@@ -55,6 +59,11 @@ async def stream(question_item:Item):
         question = context_discussion.invoke({"discussion": previous_discussion, "last_question": question_item.question})
     information = retriever.invoke(question)
     return StreamingResponse(stream_response(chain, information, previous_discussion, question_item), media_type="text/plain")
+
+@app.post("/title")
+async def generate_title(question_answer:FirstDiscussion):
+    my_title = title.invoke({"user_message": question_answer.user_message, "ai_answer": question_answer.ai_answer})
+    return {"title":my_title}
 
 if __name__ == "__main__":
     uvicorn.run("api:app", port=5000, log_level="info")
