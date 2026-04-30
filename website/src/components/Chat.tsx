@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, act } from "react";
 import "./Chat.css";
 import { supabase } from "../utils/supabase";
 import { Sidebar, type Discussion } from "./Sidebar";
@@ -51,8 +51,9 @@ function Chat ({setAccess} : {setAccess:any}) {
       previous_discussion += mes["role"] + " : " + mes["content"] + "\n"
     }
 
-    const newMessages: Message[] = [...messages, { role: "user", content: trimmed }];
+    let newMessages: Message[] = [...messages, { role: "user", content: trimmed }];
     setMessages(newMessages);
+
     setInput("");
     setLoading(true);
 
@@ -60,37 +61,62 @@ function Chat ({setAccess} : {setAccess:any}) {
     try {
       const API_URL = "http://127.0.0.1:5000/stream/";
       let assistantText = ""
-      fetch(API_URL, {
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              mode: "cors",
-              body: JSON.stringify({
-                "question": trimmed,
-                "previous_discussion": previous_discussion
-              }),
-            }).then(response => {
-              const reader = response.body?.getReader();
-              const decoder = new TextDecoder();
+      const response = await fetch(
+        API_URL, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          mode: "cors",
+          body: JSON.stringify({
+            "question": trimmed,
+            "previous_discussion": previous_discussion
+          }),
+        }
+      )
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
 
-              function read() {
-                  reader?.read().then(({ done, value }) => {
-                  if (done) {
-                      return;
-                  }
+      const read = async () => {
+        const result = await reader?.read()
 
-                  const chunk = decoder.decode(value, { stream: true });
-                  assistantText += chunk;
-                  setMessages([...previous, { role: "assistant", content: assistantText }]);
+        if (!result || result.done) {
+          if(activeId){
+            const { error } = await supabase
+            .from('discussions')
+            .update({ discussion: newMessages })
+            .eq('id', activeId)
+            .select();
+    
+            if(error){
+              console.log("Erreur de mise à jour de la discussion");
+            }
+          }
+          else{
+            const newData = { user_id: userData?.id, discussion: newMessages, title:"Khaled" }
+            const {data: data} = await supabase.from("discussions").insert(
+              [
+                newData,
+              ]
+            ).select()
+    
+            if(data){
+              setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
+              setActiveId(data[0].id)
+            }
+          }
+          return;
+        }
 
-                  read();
-                  });
-              }
-              read();
-    });
-    // setMessages((prev) => [...prev, { role: "assistant", content: assistantText }]);
+        const chunk = decoder.decode(result.value, { stream: true });
+        assistantText += chunk;
+        newMessages  = [...previous, { role: "assistant", content: assistantText }]
+        setMessages(newMessages);
+        
+        await read();
+      }
+      await read();
 
     } catch (err: any) {
       setMessages((prev) => [
@@ -110,29 +136,30 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   const onLogout = async () => {
-    await onNewDiscussion();
+    onNewDiscussion();
     const {error:err} = await supabase.auth.signOut()
     if(!err){
       setAccess(false)
     }
   };
 
-  const onNewDiscussion = async () => {
+  const onNewDiscussion = () => {
     setActiveId(null);
+    setMessages([]);
     if(messages.length == 0) return;
-    if(!userData) return;
-    const newData = { user_id: userData.id, discussion: messages, title:"khiro" }
-    const {data: data} = await supabase.from("discussions").insert(
-      [
-        newData,
-      ]
-    ).select()
+    // if(!userData) return;
+    // const newData = { user_id: userData.id, discussion: messages, title:"khiro" }
+    // const {data: data} = await supabase.from("discussions").insert(
+    //   [
+    //     newData,
+    //   ]
+    // ).select()
 
-    if(data){
-      setMessages([]);
-      setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
-      console.log(data)
-    }
+    // if(data){
+    //   setMessages([]);
+    //   setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
+    //   console.log(data)
+    // }
   };
 
   const onDelete = async(id:string) =>{
