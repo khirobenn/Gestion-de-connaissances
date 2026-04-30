@@ -9,7 +9,7 @@ interface SidebarProps {
   activeId: string | null;
   // onSelect: (id: string) => void;
   onNew: () => void;
-  // onDelete: (id: string) => void;
+  onDelete: (id: string) => void;
   onLogout: () => void;
 }
 
@@ -18,7 +18,7 @@ export function Sidebar({
   activeId,
   // onSelect, 
   onNew,
-  // onDelete,
+  onDelete,
   onLogout,
 }: SidebarProps) {
   return (
@@ -44,7 +44,7 @@ export function Sidebar({
             <div className="sidebar__item-title">{d.title}</div>
             <button
               className="sidebar__item-del"
-              onClick={e => { e.stopPropagation(); /*onDelete(d.id);*/ }}
+              onClick={e => { e.stopPropagation(); onDelete(d.id); }}
               title="Delete"
             >✕</button>
           </div>

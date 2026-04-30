@@ -14,8 +14,8 @@ function Chat ({setAccess} : {setAccess:any}) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [userDiscussions, setUserDiscussions] = useState<Discussion[]>([])
-  const [userData, setUserData] = useState<User | null>(null)
+  const [userDiscussions, setUserDiscussions] = useState<Discussion[]>([]);
+  const [userData, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -131,6 +131,19 @@ function Chat ({setAccess} : {setAccess:any}) {
     }
   };
 
+  const onDelete = async(id:string) =>{
+    const {error} = await supabase.from("discussions").delete().eq('id', id)
+    if(!error){
+      const newPreviousDiscussion = userDiscussions.filter(
+        discussion => discussion.id != id
+      );
+      setUserDiscussions(newPreviousDiscussion)
+    }
+    else{
+      console.log("Erreur de supression !")
+    }
+  }
+
   return (
     <div className="app-layout">
       <Sidebar                          // ← NEW sidebar
@@ -138,7 +151,7 @@ function Chat ({setAccess} : {setAccess:any}) {
         activeId={null}
         // onSelect={(id: string) => void}
         onNew={onNewDiscussion}
-        // onDelete={(id: string) => void}
+        onDelete={onDelete}
         onLogout={onLogout}
       />
       <div className="chat-shell">
