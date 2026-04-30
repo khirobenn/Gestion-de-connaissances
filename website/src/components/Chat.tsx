@@ -3,6 +3,7 @@ import "./Chat.css";
 import { supabase } from "../utils/supabase";
 import { Sidebar, type Discussion } from "./Sidebar";
 import type { User } from "@supabase/supabase-js";
+import { titleGenerator } from "../functions/TitleGenerator";
 
 interface Message {
   role: "user" | "assistant";
@@ -94,7 +95,8 @@ function Chat ({setAccess} : {setAccess:any}) {
             }
           }
           else{
-            const newData = { user_id: userData?.id, discussion: newMessages, title:"Khaled" }
+            const titleGenerated = await titleGenerator(newMessages[0].content, newMessages[1].content);
+            const newData = { user_id: userData?.id, discussion: newMessages, title: titleGenerated?.title }
             const {data: data} = await supabase.from("discussions").insert(
               [
                 newData,
@@ -102,7 +104,7 @@ function Chat ({setAccess} : {setAccess:any}) {
             ).select()
     
             if(data){
-              setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
+              setUserDiscussions([{id: data[0].id, title:titleGenerated?.title}, ...userDiscussions])
               setActiveId(data[0].id)
             }
           }
@@ -147,19 +149,6 @@ function Chat ({setAccess} : {setAccess:any}) {
     setActiveId(null);
     setMessages([]);
     if(messages.length == 0) return;
-    // if(!userData) return;
-    // const newData = { user_id: userData.id, discussion: messages, title:"khiro" }
-    // const {data: data} = await supabase.from("discussions").insert(
-    //   [
-    //     newData,
-    //   ]
-    // ).select()
-
-    // if(data){
-    //   setMessages([]);
-    //   setUserDiscussions([{id: data[0].id, title:"khiro"}, ...userDiscussions])
-    //   console.log(data)
-    // }
   };
 
   const onDelete = async(id:string) =>{
