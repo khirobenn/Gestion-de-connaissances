@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Chat.css";
 import { supabase } from "../utils/supabase";
+import { Sidebar, type Discussion } from "./Sidebar";
 import type { User } from "@supabase/supabase-js";
 
 interface Message {
@@ -13,11 +14,35 @@ function Chat ({setAccess} : {setAccess:any}) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [userDiscussions, setUserDiscussions] = useState<Discussion[]>([])
   const [userData, setUserData] = useState<User | null>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    const getUserData = async() =>{
+      const { data: { user }} =  await supabase.auth.getUser();
+      if(user){
+        setUserData(user);
+      }
+
+      const { data: discussions } = await supabase
+      .from('discussions')
+      .select('id, title')
+
+      if(discussions){
+        setUserDiscussions([...userDiscussions, {
+          id: discussions[0].id,
+          title: discussions[0].title,
+        }])
+        console.log(discussions)
+      }
+
+    }
+    getUserData()
+  }, [])
 
   const sendMessage = async () => {
     const trimmed = input.trim();
@@ -96,11 +121,8 @@ function Chat ({setAccess} : {setAccess:any}) {
 
   const onNewDiscussion = async () => {
     if(messages.length == 0) return;
-
-    const { data: { user }} =  await supabase.auth.getUser();
-
-    if(!user) return;
-    const newData = { user_id: user.id, discussion: messages }
+    if(!userData) return;
+    const newData = { user_id: userData.id, discussion: messages, title:"khiro" }
     const {data: data} = await supabase.from("discussions").insert(
       [
         newData,
@@ -113,76 +135,69 @@ function Chat ({setAccess} : {setAccess:any}) {
   };
 
   return (
-    <div className="chat-shell">
-      <header className="chat-header">
-        <div className="chat-header__dot" />
-        <span className="chat-header__title">Champions League Assistant</span>
+    <div className="app-layout">
+      <Sidebar                          // ← NEW sidebar
+        discussions={userDiscussions}
+        activeId={null}
+        // onSelect={(id: string) => void}
+        onNew={onNewDiscussion}
+        // onDelete={(id: string) => void}
+        onLogout={onLogout}
+      />
+      <div className="chat-shell">
+        <header className="chat-header">
+          <div className="chat-header__dot" />
+          <span className="chat-header__title">Champions League Assistant</span>
+        </header>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
-          <button className="chat-header-btn chat-header-btn--new" onClick={onNewDiscussion}>
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M6.5 1v11M1 6.5h11" stroke="#c8a96e" strokeWidth="1.6" strokeLinecap="round"/>
-            </svg>
-            New chat
+        <main className="chat-messages">
+          {messages.length === 0 && (
+            <div className="chat-empty">
+              <p>Start a conversation below ↓</p>
+            </div>
+          )}
+
+          {messages.map((msg, i) => (
+            <div key={i} className={`chat-bubble chat-bubble--${msg.role}`}>
+              <span className="chat-bubble__label">
+                {msg.role === "user" ? "You" : "Assistant"}
+              </span>
+              <p className="chat-bubble__text">{msg.content}</p>
+            </div>
+          ))}
+
+          {loading && (
+            <div className="chat-bubble chat-bubble--assistant">
+              <span className="chat-bubble__label">Assistant</span>
+              <span className="chat-typing">
+                <span /><span /><span />
+              </span>
+            </div>
+          )}
+
+          <div ref={bottomRef} />
+        </main>
+
+        <footer className="chat-input-area">
+          <textarea
+            className="chat-input"
+            rows={1}
+            placeholder="Message Assistant.. (Enter to send, Shift+Enter for newline)"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
+          />
+          <button
+            className="chat-send"
+            onClick={sendMessage}
+            disabled={loading || !input.trim()}
+            aria-label="Send"
+          >
+            ↑
           </button>
-          <button className="chat-header-btn chat-header-btn--logout" onClick={onLogout}>
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M5 2H2.5A1 1 0 001.5 3v7a1 1 0 001 1H5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-              <path d="M8.5 9.5L11.5 6.5 8.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-              <line x1="4.5" y1="6.5" x2="11" y2="6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-            </svg>
-            Log out
-          </button>
-        </div>
-      </header>
-
-      <main className="chat-messages">
-        {messages.length === 0 && (
-          <div className="chat-empty">
-            <p>Start a conversation below ↓</p>
-          </div>
-        )}
-
-        {messages.map((msg, i) => (
-          <div key={i} className={`chat-bubble chat-bubble--${msg.role}`}>
-            <span className="chat-bubble__label">
-              {msg.role === "user" ? "You" : "Assistant"}
-            </span>
-            <p className="chat-bubble__text">{msg.content}</p>
-          </div>
-        ))}
-
-        {loading && (
-          <div className="chat-bubble chat-bubble--assistant">
-            <span className="chat-bubble__label">Assistant</span>
-            <span className="chat-typing">
-              <span /><span /><span />
-            </span>
-          </div>
-        )}
-
-        <div ref={bottomRef} />
-      </main>
-
-      <footer className="chat-input-area">
-        <textarea
-          className="chat-input"
-          rows={1}
-          placeholder="Message Assistant.. (Enter to send, Shift+Enter for newline)"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={loading}
-        />
-        <button
-          className="chat-send"
-          onClick={sendMessage}
-          disabled={loading || !input.trim()}
-          aria-label="Send"
-        >
-          ↑
-        </button>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 };
