@@ -1,7 +1,8 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_groq import ChatGroq
 from vector import retriever
-model = OllamaLLM(model="gemma3:27b-cloud", streaming=True)
+model = ChatGroq(model="llama-3.3-70b-versatile", streaming=True)
 
 template = """
 You are an expert in answering questions about champions league 2025/2026. If the question isn't about champions league, don't answer.

@@ -83,6 +83,7 @@ function Chat ({setAccess} : {setAccess:any}) {
         const result = await reader?.read()
 
         if (!result || result.done) {
+          setLoading(false);
           if(activeId){
             const { error } = await supabase
             .from('discussions')
@@ -125,8 +126,6 @@ function Chat ({setAccess} : {setAccess:any}) {
         ...prev,
         { role: "assistant", content: `⚠️ Error: ${err.message}` },
       ]);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -219,6 +218,7 @@ function Chat ({setAccess} : {setAccess:any}) {
         <main className="chat-messages">
           {messages.length === 0 && (
             <div className="chat-empty">
+              {userData && <p>Hi {userData.user_metadata.firstName}!</p>}
               <p>Start a conversation below ↓</p>
             </div>
           )}
