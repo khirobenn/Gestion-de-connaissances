@@ -1,16 +1,11 @@
-from collections.abc import AsyncIterable
-import asyncio
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.messages import AIMessage
 from pydantic import BaseModel
 import uvicorn
-from sse_starlette import EventSourceResponse 
-# from starlette.responses import StreamingResponse
 from app import chain, context_discussion, title
 from vector import retriever
-# from langchain_groq import AIMe
 
 class Item(BaseModel):
     question: str
@@ -29,19 +24,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello!! I'm working"}
-
-@app.post("/chat/")
-async def post(question_item:Item):
-    information = retriever.invoke(question_item.question)
-    res = chain.invoke({"information": information, "question": question_item.question})
-    return {"response":res.content}
-    # return StreamingResponse(stream_generator(res), media_type='text/event-stream')
-
 
 async def stream_response(chain, information, previous_discussion, question_item):
     resp = ""
