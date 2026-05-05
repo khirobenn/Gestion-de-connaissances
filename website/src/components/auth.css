@@ -1,0 +1,293 @@
+/* ── Shell ───────────────────────────────────────── */
+.auth-shell {
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+  margin: 0 auto;
+  background: #0e0e10;
+  min-height: 100vh;
+}
+
+/* ── Tabs ────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #1e1e22;
+}
+
+.tab {
+  flex: 1;
+  padding: 14px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #555;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom-color 0.2s;
+}
+
+.tab.active {
+  color: #c8a96e;
+  border-bottom-color: #c8a96e;
+}
+
+.tab:hover:not(.active) {
+  color: #888;
+}
+
+/* ── Page area ───────────────────────────────────── */
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  padding: 40px 28px;
+  animation: fadeUp 0.25s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header dot row ──────────────────────────────── */
+.dot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #c8a96e;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+
+.page-title {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: 0.08em;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Card ────────────────────────────────────────── */
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: #18181c;
+  border: 1px solid #252528;
+  border-radius: 16px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Name row (sign up) ──────────────────────────── */
+.name-row {
+  display: flex;
+  gap: 12px;
+}
+
+.name-row .field {
+  flex: 1;
+}
+
+/* ── Fields ──────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #555;
+}
+
+.field input {
+  background: #0e0e10;
+  border: 1px solid #2a2a2e;
+  border-radius: 10px;
+  color: #e8e3dc;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.field input:focus {
+  border-color: #c8a96e;
+}
+
+.field input::placeholder {
+  color: #333;
+  font-style: italic;
+}
+
+/* ── Forgot password ─────────────────────────────── */
+.forgot {
+  font-size: 0.72rem;
+  color: #555;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.2s;
+  align-self: flex-end;
+}
+
+.forgot:hover {
+  color: #c8a96e;
+}
+
+/* ── Divider ─────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: #1e1e22;
+  margin: 4px 0;
+}
+
+/* ── Primary button ──────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: #c8a96e;
+  border: none;
+  border-radius: 10px;
+  color: #0e0e10;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background: #d9ba80;
+  transform: scale(1.02);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ── Or divider row ──────────────────────────────── */
+.or-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.or-row::before,
+.or-row::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #1e1e22;
+}
+
+.or-row span {
+  font-size: 0.68rem;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+/* ── Helper text ─────────────────────────────────── */
+.helper {
+  font-size: 0.78rem;
+  color: #444;
+  text-align: center;
+  font-style: italic;
+  font-family: 'Georgia', serif;
+}
+
+.link {
+  color: #c8a96e;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: #d9ba80;
+  text-decoration: underline;
+}
+
+/* ── Password strength ───────────────────────────── */
+.strength {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.strength-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: #1e1e22;
+  transition: background 0.3s;
+}
+
+.strength-label {
+  font-size: 0.65rem;
+  color: #555;
+  margin-top: 4px;
+  letter-spacing: 0.06em;
+  font-family: 'Courier New', monospace;
+  transition: color 0.3s;
+}
+
+/* ── Terms checkbox ──────────────────────────────── */
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.check-row input[type='checkbox'] {
+  accent-color: #c8a96e;
+  margin-top: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.check-row span {
+  font-size: 0.78rem;
+  color: #555;
+  line-height: 1.5;
+  font-style: italic;
+  font-family: 'Georgia', serif;
+}
+
+.check-row a {
+  color: #c8a96e;
+  text-decoration: none;
+}
+
+.check-row a:hover {
+  text-decoration: underline;
+}
