@@ -1,5 +1,6 @@
 langchain
-langchain-ollama
 langchain-chroma
+langchain-groq
 pandas
+supabase
 # pymupdf

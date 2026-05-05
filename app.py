@@ -1,7 +1,5 @@
-from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
-from vector import retriever
 model = ChatGroq(model="llama-3.3-70b-versatile", streaming=True)
 
 template = """
@@ -55,12 +53,3 @@ prompt_title = ChatPromptTemplate.from_template(title_template)
 chain = prompt | model
 context_discussion = prompt_discussion | model
 title = prompt_title | model
-
-# while True:
-#     print("\n\n-----------------------------------")
-#     question = input("Ask your question (q to quit): ")
-#     if question == "q":
-#         break
-#     information = retriever.invoke(question)
-#     res = chain.invoke({"information": information, "question": question})
-#     print(res)
