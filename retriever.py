@@ -1,6 +1,5 @@
 import os
 from langchain_core.documents import Document
-from langchain_core.documents import Document
 from supabase import create_client, Client
 from sentence_transformers import SentenceTransformer
 
