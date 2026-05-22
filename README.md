@@ -8,8 +8,10 @@
 # Installation des dépendances:
 Exécutez `pip install -r requirements` puis `cd website & npm install` 
 
-# Export des variables
+# Export des variables de votre base de données SUPABASE et de votre Clé API Groq
 Exportez vos variables `SUPABASE_URL`, `SUPABASE_KEY` et `GROQ_API_KEY`. L'export se fait dans la ligne de commande de cette façon: `export nom_de_variable=valeur_de_la_variable`.
+
+Ensuite, vous devez créer dans le dossier `website` un fichier `.env` qui contient les variables `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY`. Notez que `VITE_SUPABASE_URL` a la même valeur que `SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` a la même valeur que `SUPABASE_KEY`.
 
 # Lancer le site:
 - ### Linux:
