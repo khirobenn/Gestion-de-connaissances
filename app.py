@@ -1,5 +1,5 @@
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate #pr avoir les variables template = """...
+from langchain_groq import ChatGroq #pour avoir des modèles de api, LLM (different de ollama)
 model = ChatGroq(model="llama-3.3-70b-versatile", streaming=True)
 
 template = """
@@ -11,6 +11,7 @@ Here are some information about what happened in champions league 2025/2026: {in
 
 Here is the question to answer: {question}
 """
+#a template pon donne les variables {}
 
 context = """
 You are a query reformulation assistant.
@@ -27,6 +28,7 @@ Q&A exchanges :
 
 And this is the last question of the user: {last_question}.
 """
+#pareil pour context on a les variables {}
 
 title_template = """
 You are a conversation titler. Given the first exchange between a user and an AI assistant, produce a short, descriptive title for the conversation.
@@ -46,10 +48,12 @@ AI answer:
 Respond with the title only, nothing else.
 """
 
-prompt = ChatPromptTemplate.from_template(template)
-prompt_discussion = ChatPromptTemplate.from_template(context)
-prompt_title = ChatPromptTemplate.from_template(title_template)
+prompt = ChatPromptTemplate.from_template(template) #premier prompt = template --> chammpionsleague
+prompt_discussion = ChatPromptTemplate.from_template(context) #reformuler la question a partir de la discussion d avant (par rapport a la question d avant) et la dernière question posée
+prompt_title = ChatPromptTemplate.from_template(title_template) #titre pour la discussion 
 
+#objets du llm
 chain = prompt | model
 context_discussion = prompt_discussion | model
 title = prompt_title | model
+#sortie de la commande de gauche est l'entrée de droite
