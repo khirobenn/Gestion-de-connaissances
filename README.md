@@ -6,14 +6,13 @@
 `python -m venv env` puis `env\Scripts\activate`
 
 # Installation des dépendances:
-`pip install -r requirements`
+Exécutez `pip install -r requirements` puis `cd website & npm install` 
 
-# Installation des modèles utilisés:
-- `ollama pull embeddinggemma`
-- `ollama pull gemma3:27b-cloud`
+# Export des variables
+Exportez vos variables `SUPABASE_URL`, `SUPABASE_KEY` et `GROQ_API_KEY`. L'export se fait dans la ligne de commande de cette façon: `export nom_de_variable=valeur_de_la_variable`.
 
-# Lancer l'App:
+# Lancer le site:
 - ### Linux:
-`python3 app.py`
+Lancez l'api avec `python3 api.py`. On ouvre une autre ligne de commande et on fait `cd website & npm run dev`
 - ### Windows:
-`python app.py`
+Lancez l'api avec `python api.py`. On ouvre une autre ligne de commande et on fait `cd website & npm run dev`
