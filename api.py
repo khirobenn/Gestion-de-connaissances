@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain.messages import AIMessage
 from pydantic import BaseModel
 import uvicorn
+import asyncio
 from app import chain, context_discussion, title
 from retriever import retriever
 
@@ -29,6 +30,7 @@ async def stream_response(chain, information, previous_discussion, question_item
     for chunk in chain.stream({"information": information, "previous_discussion": previous_discussion, "question": question_item.question}):
         resp += chunk.content
         yield chunk.content
+        await asyncio.sleep(0.1)
 
 @app.post("/stream/", response_class=StreamingResponse)
 async def stream(question_item:Item):
@@ -38,7 +40,6 @@ async def stream(question_item:Item):
     else:
         question = context_discussion.invoke({"discussion": previous_discussion, "last_question": question_item.question})
     information = retriever.invoke(question.content)
-    print(information)
     return StreamingResponse(stream_response(chain, information, previous_discussion, question_item), media_type="text/plain")
 
 @app.post("/title")

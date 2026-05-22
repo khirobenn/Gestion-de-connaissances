@@ -10,11 +10,11 @@ class Retriever():
         self.supabase : Client = create_client(url, key)
         self.embedding_model = SentenceTransformer('Supabase/gte-small')
 
-    def invoke(self, sentence:str, threeshold=0.8, count=10) -> list[Document]:
+    def invoke(self, sentence:str, threshold=0.8, count=10) -> list[Document]:
         sentence_embedding = self.embedding_model.encode([sentence])[0].tolist()
         parameters = {
             "query_embedding" : sentence_embedding,
-            "match_threshold" : threeshold,
+            "match_threshold" : threshold,
             "match_count" : count 
         }
         response = (

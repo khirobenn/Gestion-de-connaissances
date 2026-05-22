@@ -33,10 +33,10 @@ function Chat ({setAccess} : {setAccess:any}) {
       const { data: discussions } = await supabase
       .from('discussions')
       .select('id, title')
+      .order('created_at', { ascending: false })
 
       if(discussions){
         setUserDiscussions([...userDiscussions, ...discussions])
-        console.log(discussions)
       }
 
     }
