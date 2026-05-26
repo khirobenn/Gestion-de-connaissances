@@ -38,10 +38,12 @@ async def stream(question_item:Item):
     if len(previous_discussion) == 0:
         question = AIMessage(content=question_item.question)
     else:
+        # Si on a une discussion précédente, on reformule la question pour le retriever
         question = context_discussion.invoke({"discussion": previous_discussion, "last_question": question_item.question})
     information = retriever.invoke(question.content)
     return StreamingResponse(stream_response(chain, information, previous_discussion, question_item), media_type="text/plain")
 
+# On génére un titre à base de la première question de l'utilisateur et la première réponse du LLM
 @app.post("/title")
 async def generate_title(question_answer:FirstDiscussion):
     my_title = title.invoke({"user_message": question_answer.user_message, "ai_answer": question_answer.ai_answer})
