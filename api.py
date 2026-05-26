@@ -48,4 +48,4 @@ async def generate_title(question_answer:FirstDiscussion):
     return {"title":my_title.content}
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", port=5000, log_level="info")
+    uvicorn.run("api:app", port=8080, log_level="info")
