@@ -25,10 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def ping():
-    return "Hii!"
-
 async def stream_response(chain, information, previous_discussion, question_item):
     resp = ""
     for chunk in chain.stream({"information": information, "previous_discussion": previous_discussion, "question": question_item.question}):
@@ -52,4 +48,4 @@ async def generate_title(question_answer:FirstDiscussion):
     return {"title":my_title.content}
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", port=8080, log_level="info")
+    uvicorn.run("api:app", port=5000, log_level="info")
