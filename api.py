@@ -25,6 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def ping():
+    return "Hii!"
+
 async def stream_response(chain, information, previous_discussion, question_item):
     resp = ""
     for chunk in chain.stream({"information": information, "previous_discussion": previous_discussion, "question": question_item.question}):
