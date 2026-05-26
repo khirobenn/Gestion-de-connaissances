@@ -3,4 +3,5 @@ langchain-chroma
 langchain-groq
 pandas
 supabase
+uvicorn
 # pymupdf
